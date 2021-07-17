@@ -8,7 +8,11 @@ class WeatherScreen extends StatefulWidget {
   _WeatherScreenState createState() => _WeatherScreenState();
 }
 
+enum PopupOptions { brightness, tempScale }
+
 class _WeatherScreenState extends State<WeatherScreen> {
+  bool _darkMode = false;
+
   @override
   Widget build(BuildContext context) {
     return Material(
@@ -158,11 +162,39 @@ class _WeatherScreenState extends State<WeatherScreen> {
 
   Align menuButton() {
     return Align(
-      alignment: Alignment.topLeft,
-      child: IconButton(
-        icon: Icon(Icons.menu),
-        iconSize: 40,
-        onPressed: () {},
+      alignment: Alignment.centerLeft,
+      child: PopupMenuButton(
+        onSelected: (PopupOptions result) {
+          setState(() {
+            print(result);
+          });
+        },
+        child: Icon(
+          Icons.menu,
+          size: 40,
+        ),
+        itemBuilder: (context) => <PopupMenuEntry<PopupOptions>>[
+          PopupMenuItem<PopupOptions>(
+            value: PopupOptions.brightness,
+            child: SwitchListTile(
+              title: Text("dark mode"),
+              secondary: Icon(Icons.wb_sunny),
+              value: _darkMode,
+              onChanged: (value) {
+                setState(
+                  () {
+                    _darkMode = value;
+                    print(_darkMode);
+                  },
+                );
+              },
+            ),
+          ),
+          PopupMenuItem<PopupOptions>(
+            value: PopupOptions.tempScale,
+            child: Text("Change Temperature Scale"),
+          ),
+        ],
       ),
     );
   }

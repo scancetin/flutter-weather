@@ -10,27 +10,27 @@ class ForecasetWidget extends StatelessWidget {
         ListTile(
           leading: Text("Monday"),
           title: Align(alignment: Alignment.centerRight, child: Icon(Icons.wb_sunny)),
-          trailing: Text("23' / 18'C"),
+          trailing: Text("23' / 18'"),
         ),
         ListTile(
           leading: Text("Monday"),
           title: Align(alignment: Alignment.centerRight, child: Icon(Icons.wb_sunny)),
-          trailing: Text("23' / 18'C"),
+          trailing: Text("23' / 18'"),
         ),
         ListTile(
           leading: Text("Monday"),
           title: Align(alignment: Alignment.centerRight, child: Icon(Icons.wb_sunny)),
-          trailing: Text("23' / 18'C"),
+          trailing: Text("23' / 18'"),
         ),
         ListTile(
           leading: Text("Monday"),
           title: Align(alignment: Alignment.centerRight, child: Icon(Icons.wb_sunny)),
-          trailing: Text("23' / 18'C"),
+          trailing: Text("23' / 18'"),
         ),
         ListTile(
           leading: Text("Monday"),
           title: Align(alignment: Alignment.centerRight, child: Icon(Icons.wb_sunny)),
-          trailing: Text("23' / 18'C"),
+          trailing: Text("23' / 18'"),
         ),
       ],
     );
