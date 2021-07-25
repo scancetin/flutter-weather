@@ -5,9 +5,6 @@ import 'package:weather_icons/weather_icons.dart';
 import 'package:http/http.dart' as http;
 import 'dart:async';
 
-// import 'package:flutter_weather/src/utils/WeatherIconMapper.dart';
-// import 'package:flutter_weather/src/utils/converters.dart';
-
 class Weather extends Equatable {
   // final int id;
   // final int time;
@@ -159,6 +156,6 @@ Future<Weather> fetchWeather(String cityName) async {
   if (response.statusCode == 200) {
     return Weather.fromMap(jsonDecode(response.body));
   } else {
-    throw Exception('Failed to load question');
+    throw Exception('Failed to load weather');
   }
 }

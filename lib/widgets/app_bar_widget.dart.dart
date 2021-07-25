@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 
+enum TempScales { celsius, fahrenheit, kelvin }
+TempScales _scale = TempScales.kelvin;
+
 class AppBarWidget extends StatefulWidget {
   final String time;
   const AppBarWidget({Key key, this.time}) : super(key: key);
@@ -52,65 +55,46 @@ class _AppBarWidgetState extends State<AppBarWidget> {
       ],
     );
   }
-}
 
-enum TempScales { celsius, fahrenheit, kelvin }
-TempScales _scale = TempScales.celsius;
-
-Align popupMenuWidget() {
-  return Align(
-    alignment: Alignment.centerLeft,
-    child: PopupMenuButton(
-      padding: EdgeInsets.all(0),
-      child: Icon(
-        Icons.menu,
-        size: 40,
-      ),
-      itemBuilder: (context) => <PopupMenuEntry>[
-        PopupMenuItem(
-          child: StatefulBuilder(
-            builder: (BuildContext context, StateSetter setState) {
-              return Column(
-                children: [
-                  RadioListTile<TempScales>(
-                    title: Text('celcius'),
-                    value: TempScales.celsius,
-                    groupValue: _scale,
-                    onChanged: (TempScales value) {
-                      setState(() {
-                        _scale = value;
-                        print(_scale);
-                      });
-                    },
-                  ),
-                  RadioListTile<TempScales>(
-                    title: Text('fahrenheit'),
-                    value: TempScales.fahrenheit,
-                    groupValue: _scale,
-                    onChanged: (TempScales value) {
-                      setState(() {
-                        _scale = value;
-                        print(_scale);
-                      });
-                    },
-                  ),
-                  RadioListTile<TempScales>(
-                    title: Text('kelvin'),
-                    value: TempScales.kelvin,
-                    groupValue: _scale,
-                    onChanged: (TempScales value) {
-                      setState(() {
-                        _scale = value;
-                        print(_scale);
-                      });
-                    },
-                  ),
-                ],
-              );
-            },
-          ),
+  Align popupMenuWidget() {
+    return Align(
+      alignment: Alignment.centerLeft,
+      child: PopupMenuButton(
+        child: Icon(
+          Icons.menu,
+          size: 40,
         ),
-      ],
-    ),
-  );
+        itemBuilder: (context) => <PopupMenuEntry>[
+          PopupMenuItem(
+            child: StatefulBuilder(
+              builder: (BuildContext context, StateSetter setState) {
+                return Column(
+                  children: [
+                    tempScales(setState, "celcius", TempScales.celsius),
+                    tempScales(setState, "kelvin", TempScales.fahrenheit),
+                    tempScales(setState, "kelvin", TempScales.kelvin),
+                  ],
+                );
+              },
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  RadioListTile<TempScales> tempScales(StateSetter setState, String scaleTitle, TempScales tempScale) {
+    return RadioListTile<TempScales>(
+      contentPadding: EdgeInsets.all(0),
+      title: Text(scaleTitle),
+      value: tempScale,
+      groupValue: _scale,
+      onChanged: (TempScales value) {
+        setState(() {
+          _scale = value;
+          print(_scale);
+        });
+      },
+    );
+  }
 }

@@ -34,7 +34,7 @@ class CurrentInfosWidget extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              valueTile("sunrise", DateFormat("h:m a").format(DateTime.fromMillisecondsSinceEpoch((weather.sunrise + weather.timeZone) * 1000))),
+              valueTile("sunrise", DateFormat("h:mm a").format(DateTime.fromMillisecondsSinceEpoch((weather.sunrise + weather.timeZone) * 1000))),
               tilePaddingH(),
               valueTile("sunset", DateFormat("h:mm a").format(DateTime.fromMillisecondsSinceEpoch((weather.sunset + weather.timeZone) * 1000))),
             ],
@@ -65,8 +65,6 @@ class CurrentInfosWidget extends StatelessWidget {
   }
 
   Padding tilePaddingH() {
-    print(DateFormat("h:m a").format(DateTime.fromMillisecondsSinceEpoch((weather.sunrise + weather.timeZone) * 1000)));
-    print(DateFormat("h:m a").format(DateTime.fromMillisecondsSinceEpoch((weather.sunset + weather.timeZone) * 1000)));
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: 10),
       child: Container(

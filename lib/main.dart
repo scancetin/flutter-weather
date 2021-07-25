@@ -16,7 +16,7 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.red,
         brightness: Brightness.dark,
       ),
-      home: WeatherScreen(),
+      home: WeatherScreen(cityName: "toronto",),
     );
   }
 }

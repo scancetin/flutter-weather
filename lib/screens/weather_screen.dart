@@ -6,20 +6,22 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 class WeatherScreen extends StatefulWidget {
-  WeatherScreen({Key key}) : super(key: key);
+  final String cityName;
+  WeatherScreen({Key key, this.cityName}) : super(key: key);
 
   @override
-  _WeatherScreenState createState() => _WeatherScreenState();
+  _WeatherScreenState createState() => _WeatherScreenState(cityName: cityName);
 }
 
 class _WeatherScreenState extends State<WeatherScreen> {
+  _WeatherScreenState({this.cityName});
+  String cityName;
   Future<Weather> futureWeather;
-  String _cityName = "Australia";
 
   @override
   void initState() {
     super.initState();
-    futureWeather = fetchWeather(_cityName);
+    futureWeather = fetchWeather(cityName);
   }
 
   @override
@@ -48,7 +50,7 @@ class _WeatherScreenState extends State<WeatherScreen> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Expanded(
-                            child: currentWeather(snapshot.data.temperature.toString(), Icons.wb_sunny),
+                            child: currentWeather(snapshot.data.temperature.toString(), snapshot.data.getIconData()),
                           ),
                           Expanded(
                             child: Column(
@@ -77,12 +79,12 @@ class _WeatherScreenState extends State<WeatherScreen> {
   }
 
   Column cityInfos(String city, String status, Weather data) {
-    print(data.temperature);
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         Text(
           city,
+          overflow: TextOverflow.ellipsis,
           style: TextStyle(fontSize: 50),
         ),
         Text(
@@ -95,9 +97,10 @@ class _WeatherScreenState extends State<WeatherScreen> {
 
   Column currentWeather(String temp, IconData icon) {
     return Column(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Icon(icon, size: 150),
-        SizedBox(height: 20),
+        SizedBox(height: 30),
         Text(
           temp,
           style: TextStyle(fontSize: 50),
