@@ -5,6 +5,9 @@ import 'package:any_weather_app/widgets/app_bar_widget.dart.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
+enum TempScales { celsius, fahrenheit, kelvin }
+TempScales _scale = TempScales.kelvin;
+
 class WeatherScreen extends StatefulWidget {
   final String cityName;
   WeatherScreen({Key key, this.cityName}) : super(key: key);
@@ -17,6 +20,7 @@ class _WeatherScreenState extends State<WeatherScreen> {
   _WeatherScreenState({this.cityName});
   String cityName;
   Future<Weather> futureWeather;
+  double _tempConverter = 0;
 
   @override
   void initState() {
@@ -38,11 +42,34 @@ class _WeatherScreenState extends State<WeatherScreen> {
                     Expanded(
                       child: AppBarWidget(
                         time: DateFormat("EEEE, d MMMM yyyy").format(DateTime.fromMillisecondsSinceEpoch((snapshot.data.sunrise + snapshot.data.timeZone) * 1000)),
+                        radiobuttonWidget: StatefulBuilder(
+                          builder: (BuildContext context, StateSetter setState) {
+                            return Column(
+                              children: [
+                                tempScales(setState, "celcius", () {
+                                  _scale = TempScales.celsius;
+                                  _tempConverter = snapshot.data.temperature - 273.15;
+                                  print(_tempConverter);
+                                }, TempScales.celsius),
+                                tempScales(setState, "fahrenheit", () {
+                                  _scale = TempScales.fahrenheit;
+                                  _tempConverter = snapshot.data.temperature * (9 / 5) - 459.67;
+                                  print(_tempConverter);
+                                }, TempScales.fahrenheit),
+                                tempScales(setState, "kelvin", () {
+                                  _scale = TempScales.kelvin;
+                                  _tempConverter = snapshot.data.temperature;
+                                  print(_tempConverter);
+                                }, TempScales.kelvin),
+                              ],
+                            );
+                          },
+                        ),
                       ),
                     ),
                     Expanded(
                       flex: 2,
-                      child: cityInfos(snapshot.data.cityName, snapshot.data.description, snapshot.data),
+                      child: cityInfos(snapshot.data.cityName, snapshot.data.description),
                     ),
                     Expanded(
                       flex: 4,
@@ -50,7 +77,7 @@ class _WeatherScreenState extends State<WeatherScreen> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Expanded(
-                            child: currentWeather(snapshot.data.temperature.toString(), snapshot.data.getIconData()),
+                            child: currentWeather(_tempConverter.toStringAsFixed(1), snapshot.data.getIconData()),
                           ),
                           Expanded(
                             child: Column(
@@ -78,7 +105,21 @@ class _WeatherScreenState extends State<WeatherScreen> {
         });
   }
 
-  Column cityInfos(String city, String status, Weather data) {
+  RadioListTile<TempScales> tempScales(StateSetter setState, String scaleTitle, Function onPressed, TempScales tempScale) {
+    return RadioListTile<TempScales>(
+      contentPadding: EdgeInsets.all(0),
+      title: Text(scaleTitle),
+      value: tempScale,
+      groupValue: _scale,
+      onChanged: (TempScales value) {
+        setState(
+          onPressed,
+        );
+      },
+    );
+  }
+
+  Column cityInfos(String city, String status) {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
@@ -102,7 +143,7 @@ class _WeatherScreenState extends State<WeatherScreen> {
         Icon(icon, size: 150),
         SizedBox(height: 30),
         Text(
-          temp,
+          "$temp°",
           style: TextStyle(fontSize: 50),
         ),
       ],

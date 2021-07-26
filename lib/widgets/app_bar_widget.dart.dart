@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 
-enum TempScales { celsius, fahrenheit, kelvin }
-TempScales _scale = TempScales.kelvin;
+// enum TempScales { celsius, fahrenheit, kelvin }
+// TempScales _scale = TempScales.kelvin;
 
 class AppBarWidget extends StatefulWidget {
   final String time;
-  const AppBarWidget({Key key, this.time}) : super(key: key);
+  final Widget radiobuttonWidget;
+  const AppBarWidget({Key key, this.time, this.radiobuttonWidget}) : super(key: key);
 
   @override
   _AppBarWidgetState createState() => _AppBarWidgetState();
@@ -65,36 +66,37 @@ class _AppBarWidgetState extends State<AppBarWidget> {
           size: 40,
         ),
         itemBuilder: (context) => <PopupMenuEntry>[
-          PopupMenuItem(
-            child: StatefulBuilder(
-              builder: (BuildContext context, StateSetter setState) {
-                return Column(
-                  children: [
-                    tempScales(setState, "celcius", TempScales.celsius),
-                    tempScales(setState, "kelvin", TempScales.fahrenheit),
-                    tempScales(setState, "kelvin", TempScales.kelvin),
-                  ],
-                );
-              },
-            ),
-          ),
+          PopupMenuItem(child: widget.radiobuttonWidget
+              // StatefulBuilder(
+              //   builder: (BuildContext context, StateSetter setState) {
+              //     return widget.radiobuttonWidget;
+              //     Column(
+              //       children: [
+              //         tempScales(setState, "celcius", widget.onPressed),
+              //         tempScales(setState, "fahrenheit", TempScales.fahrenheit),
+              //         tempScales(setState, "kelvin", TempScales.kelvin),
+              //       ],
+              //     )
+              //   },
+              // ),
+              ),
         ],
       ),
     );
   }
 
-  RadioListTile<TempScales> tempScales(StateSetter setState, String scaleTitle, TempScales tempScale) {
-    return RadioListTile<TempScales>(
-      contentPadding: EdgeInsets.all(0),
-      title: Text(scaleTitle),
-      value: tempScale,
-      groupValue: _scale,
-      onChanged: (TempScales value) {
-        setState(() {
-          _scale = value;
-          print(_scale);
-        });
-      },
-    );
-  }
+  // RadioListTile<TempScales> tempScales(StateSetter setState, String scaleTitle, Function onPressed) {
+  //   return RadioListTile<TempScales>(
+  //     contentPadding: EdgeInsets.all(0),
+  //     title: Text(scaleTitle),
+  //     value: tempScale,
+  //     groupValue: _scale,
+  //     onChanged: (TempScales value) {
+  //       setState(() {
+  //         _scale = value;
+  //         print(_scale);
+  //       });
+  //     },
+  //   );
+  // }
 }
