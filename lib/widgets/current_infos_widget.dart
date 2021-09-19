@@ -59,7 +59,7 @@ class CurrentInfosWidget extends StatelessWidget {
       child: Container(
         height: 1,
         width: 105,
-        color: Colors.black,
+        color: Colors.grey,
       ),
     );
   }
@@ -70,7 +70,7 @@ class CurrentInfosWidget extends StatelessWidget {
       child: Container(
         height: 30,
         width: 1,
-        color: Colors.black,
+        color: Colors.grey,
       ),
     );
   }

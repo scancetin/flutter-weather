@@ -6,107 +6,64 @@ import 'package:http/http.dart' as http;
 import 'dart:async';
 
 class Weather extends Equatable {
-  // final int id;
-  // final int time;
   final int sunrise;
   final int sunset;
   final int humidity;
   final int timeZone;
-
   final String description;
   final String iconCode;
-  // final String main;
   final String cityName;
-
   final double windSpeed;
-
   final double temperature;
   final double maxTemperature;
   final double minTemperature;
-  // Temperature temperature;
-  // Temperature maxTemperature;
-  // Temperature minTemperature;
-
-  // final List<Weather> forecast;
 
   const Weather({
-    // @required this.id,
-    // @required this.time,
     @required this.sunrise,
     @required this.sunset,
     @required this.humidity,
     @required this.timeZone,
     @required this.description,
     @required this.iconCode,
-    // @required this.main,
     @required this.cityName,
     @required this.windSpeed,
     @required this.temperature,
     @required this.maxTemperature,
     @required this.minTemperature,
-    // @required this.forecast,
   });
 
   @override
   List<Object> get props => [
-        // id,
-        // time,
         sunrise,
         sunset,
         humidity,
         timeZone,
         description,
         iconCode,
-        // main,
         cityName,
         windSpeed,
         temperature,
         maxTemperature,
         minTemperature,
-        // forecast,
       ];
 
   factory Weather.fromMap(Map<String, dynamic> map) {
     if (map == null) return null;
     final weather = map['weather'][0];
     return Weather(
-      // id: weather['id'] ?? '',
-      // time: map['dt'] ?? '',
       description: weather['description'] ?? '',
       iconCode: weather['icon'] ?? '',
-      // main: weather['main'] ?? '',
       cityName: map['name'] ?? '',
-
       temperature: map['main']['temp'] ?? '',
       maxTemperature: map['main']['temp'] ?? '',
       minTemperature: map['main']['temp'] ?? '',
-
-      // temperature: Temperature(intToDouble(json['main']['temp'])),
-      // maxTemperature: Temperature(intToDouble(json['main']['temp_max'])),
-      // minTemperature: Temperature(intToDouble(json['main']['temp_min'])),
-
       sunrise: map['sys']['sunrise'] ?? '',
       sunset: map['sys']['sunset'] ?? '',
       humidity: map['main']['humidity'] ?? '',
       timeZone: map['timezone'] ?? '',
       windSpeed: map['wind']['speed'] ?? '',
-      // forecast: fromForecastJson(map),
     );
   }
-
-  // static List<Weather> fromForecastJson(Map<String, dynamic> map) {
-  //   final weathers = <Weather>[];
-  //   for (final item in map['list']) {
-  //     weathers.add(Weather(
-  //         time: item['dt'],
-  //         temperature: item['main']['temp'],
-  //         // temperature: Temperature(intToDouble(
-  //         //   item['main']['temp'],
-  //         // )),
-  //         iconCode: item['weather'][0]['icon']));
-  //   }
-  //   return weathers;
-  // }
 
   IconData getIconData() {
     switch (this.iconCode) {

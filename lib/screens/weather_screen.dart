@@ -30,41 +30,18 @@ class _WeatherScreenState extends State<WeatherScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder<Weather>(
-        future: futureWeather,
-        builder: (context, snapshot) {
-          if (snapshot.hasData) {
-            return Material(
-              child: Padding(
-                padding: EdgeInsets.symmetric(vertical: 10, horizontal: 5),
+    return Scaffold(
+      body: FutureBuilder<Weather>(
+          future: futureWeather,
+          builder: (context, snapshot) {
+            if (snapshot.hasData) {
+              return SafeArea(
                 child: Column(
                   children: [
                     Expanded(
                       child: AppBarWidget(
                         time: DateFormat("EEEE, d MMMM yyyy").format(DateTime.fromMillisecondsSinceEpoch((snapshot.data.sunrise + snapshot.data.timeZone) * 1000)),
-                        radiobuttonWidget: StatefulBuilder(
-                          builder: (BuildContext context, StateSetter setState) {
-                            return Column(
-                              children: [
-                                tempScales(setState, "celcius", () {
-                                  _scale = TempScales.celsius;
-                                  _tempConverter = snapshot.data.temperature - 273.15;
-                                  print(_tempConverter);
-                                }, TempScales.celsius),
-                                tempScales(setState, "fahrenheit", () {
-                                  _scale = TempScales.fahrenheit;
-                                  _tempConverter = snapshot.data.temperature * (9 / 5) - 459.67;
-                                  print(_tempConverter);
-                                }, TempScales.fahrenheit),
-                                tempScales(setState, "kelvin", () {
-                                  _scale = TempScales.kelvin;
-                                  _tempConverter = snapshot.data.temperature;
-                                  print(_tempConverter);
-                                }, TempScales.kelvin),
-                              ],
-                            );
-                          },
-                        ),
+                        tempKelvin: snapshot.data.temperature,
                       ),
                     ),
                     Expanded(
@@ -96,26 +73,12 @@ class _WeatherScreenState extends State<WeatherScreen> {
                     ),
                   ],
                 ),
-              ),
-            );
-          } else if (snapshot.hasError) {
-            return Text("${snapshot.error}");
-          }
-          return Container();
-        });
-  }
-
-  RadioListTile<TempScales> tempScales(StateSetter setState, String scaleTitle, Function onPressed, TempScales tempScale) {
-    return RadioListTile<TempScales>(
-      contentPadding: EdgeInsets.all(0),
-      title: Text(scaleTitle),
-      value: tempScale,
-      groupValue: _scale,
-      onChanged: (TempScales value) {
-        setState(
-          onPressed,
-        );
-      },
+              );
+            } else if (snapshot.hasError) {
+              return Text("${snapshot.error}");
+            }
+            return Container();
+          }),
     );
   }
 
@@ -153,9 +116,13 @@ class _WeatherScreenState extends State<WeatherScreen> {
   Align plusButton() {
     return Align(
       alignment: Alignment.bottomRight,
-      child: FloatingActionButton(
-        onPressed: () {},
-        child: Icon(Icons.add),
+      child: Padding(
+        padding: EdgeInsets.only(right: 10),
+        child: FloatingActionButton(
+          backgroundColor: Colors.grey,
+          onPressed: () {},
+          child: Icon(Icons.add),
+        ),
       ),
     );
   }

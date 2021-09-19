@@ -1,12 +1,14 @@
+import 'package:any_weather_app/models/theme.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
-// enum TempScales { celsius, fahrenheit, kelvin }
-// TempScales _scale = TempScales.kelvin;
+enum TempScales { celsius, fahrenheit, kelvin }
+TempScales _scale = TempScales.kelvin;
 
 class AppBarWidget extends StatefulWidget {
   final String time;
-  final Widget radiobuttonWidget;
-  const AppBarWidget({Key key, this.time, this.radiobuttonWidget}) : super(key: key);
+  final double tempKelvin;
+  const AppBarWidget({Key key, this.time, this.tempKelvin}) : super(key: key);
 
   @override
   _AppBarWidgetState createState() => _AppBarWidgetState();
@@ -25,11 +27,58 @@ class _AppBarWidgetState extends State<AppBarWidget> {
     );
   }
 
-  Align dateTimeWidget() {
+  Align popupMenuWidget() {
+    double _tempConverter = 0;
     return Align(
-      alignment: Alignment.center,
+      alignment: Alignment.centerLeft,
+      child: PopupMenuButton(
+        child: Icon(Icons.menu, size: 40),
+        itemBuilder: (context) => <PopupMenuEntry>[
+          PopupMenuItem(
+            child: Column(
+              children: [
+                tempScales(setState, "celcius", () {
+                  _scale = TempScales.celsius;
+                  _tempConverter = (widget.tempKelvin - 273.15).roundToDouble();
+                  print(_tempConverter);
+                }, TempScales.celsius),
+                tempScales(setState, "fahrenheit", () {
+                  _scale = TempScales.fahrenheit;
+                  _tempConverter = (widget.tempKelvin * (9 / 5) - 459.67).roundToDouble();
+                  print(_tempConverter);
+                }, TempScales.fahrenheit),
+                tempScales(setState, "kelvin", () {
+                  _scale = TempScales.kelvin;
+                  _tempConverter = widget.tempKelvin.roundToDouble();
+                  print(_tempConverter);
+                }, TempScales.kelvin),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  RadioListTile<TempScales> tempScales(StateSetter setState, String scaleTitle, Function onPressed, TempScales tempScale) {
+    return RadioListTile<TempScales>(
+      contentPadding: EdgeInsets.all(0),
+      title: Text(scaleTitle),
+      value: tempScale,
+      groupValue: _scale,
+      onChanged: (TempScales value) {
+        setState(
+          onPressed,
+        );
+      },
+    );
+  }
+
+  Center dateTimeWidget() {
+    return Center(
       child: Text(
         widget.time,
+        textAlign: TextAlign.center,
         style: TextStyle(fontSize: 18),
       ),
     );
@@ -47,6 +96,11 @@ class _AppBarWidgetState extends State<AppBarWidget> {
           onChanged: (value) {
             setState(
               () {
+                if (value) {
+                  Provider.of<CustomThemeModel>(context, listen: false).setThemeData(ThemeData.dark());
+                } else {
+                  Provider.of<CustomThemeModel>(context, listen: false).setThemeData(ThemeData.light());
+                }
                 _darkMode = value;
                 print(_darkMode);
               },
@@ -56,47 +110,4 @@ class _AppBarWidgetState extends State<AppBarWidget> {
       ],
     );
   }
-
-  Align popupMenuWidget() {
-    return Align(
-      alignment: Alignment.centerLeft,
-      child: PopupMenuButton(
-        child: Icon(
-          Icons.menu,
-          size: 40,
-        ),
-        itemBuilder: (context) => <PopupMenuEntry>[
-          PopupMenuItem(child: widget.radiobuttonWidget
-              // StatefulBuilder(
-              //   builder: (BuildContext context, StateSetter setState) {
-              //     return widget.radiobuttonWidget;
-              //     Column(
-              //       children: [
-              //         tempScales(setState, "celcius", widget.onPressed),
-              //         tempScales(setState, "fahrenheit", TempScales.fahrenheit),
-              //         tempScales(setState, "kelvin", TempScales.kelvin),
-              //       ],
-              //     )
-              //   },
-              // ),
-              ),
-        ],
-      ),
-    );
-  }
-
-  // RadioListTile<TempScales> tempScales(StateSetter setState, String scaleTitle, Function onPressed) {
-  //   return RadioListTile<TempScales>(
-  //     contentPadding: EdgeInsets.all(0),
-  //     title: Text(scaleTitle),
-  //     value: tempScale,
-  //     groupValue: _scale,
-  //     onChanged: (TempScales value) {
-  //       setState(() {
-  //         _scale = value;
-  //         print(_scale);
-  //       });
-  //     },
-  //   );
-  // }
 }
