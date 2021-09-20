@@ -1,9 +1,11 @@
+import 'package:any_weather_app/models/scale.dart';
 import 'package:any_weather_app/models/weather.dart';
 import 'package:any_weather_app/widgets/current_infos_widget.dart';
 import 'package:any_weather_app/widgets/forecast_widget.dart';
 import 'package:any_weather_app/widgets/app_bar_widget.dart.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 
 enum TempScales { celsius, fahrenheit, kelvin }
 TempScales _scale = TempScales.kelvin;
@@ -20,7 +22,6 @@ class _WeatherScreenState extends State<WeatherScreen> {
   _WeatherScreenState({this.cityName});
   String cityName;
   Future<Weather> futureWeather;
-  double _tempConverter = 0;
 
   @override
   void initState() {
@@ -54,7 +55,7 @@ class _WeatherScreenState extends State<WeatherScreen> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Expanded(
-                            child: currentWeather(_tempConverter.toStringAsFixed(1), snapshot.data.getIconData()),
+                            child: currentWeather(snapshot.data.temperature, snapshot.data.getIconData()),
                           ),
                           Expanded(
                             child: Column(
@@ -99,14 +100,14 @@ class _WeatherScreenState extends State<WeatherScreen> {
     );
   }
 
-  Column currentWeather(String temp, IconData icon) {
+  Column currentWeather(double temp, IconData icon) {
     return Column(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Icon(icon, size: 150),
         SizedBox(height: 30),
         Text(
-          "$temp°",
+          "${Provider.of<ScaleModel>(context).convertTemp(temp)}°",
           style: TextStyle(fontSize: 50),
         ),
       ],
