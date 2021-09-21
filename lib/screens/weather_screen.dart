@@ -7,9 +7,6 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
-enum TempScales { celsius, fahrenheit, kelvin }
-TempScales _scale = TempScales.kelvin;
-
 class WeatherScreen extends StatefulWidget {
   final String cityName;
   WeatherScreen({Key key, this.cityName}) : super(key: key);
@@ -42,7 +39,6 @@ class _WeatherScreenState extends State<WeatherScreen> {
                     Expanded(
                       child: AppBarWidget(
                         time: DateFormat("EEEE, d MMMM yyyy").format(DateTime.fromMillisecondsSinceEpoch((snapshot.data.sunrise + snapshot.data.timeZone) * 1000)),
-                        tempKelvin: snapshot.data.temperature,
                       ),
                     ),
                     Expanded(
@@ -120,7 +116,6 @@ class _WeatherScreenState extends State<WeatherScreen> {
       child: Padding(
         padding: EdgeInsets.only(right: 10),
         child: FloatingActionButton(
-          backgroundColor: Colors.grey,
           onPressed: () {},
           child: Icon(Icons.add),
         ),

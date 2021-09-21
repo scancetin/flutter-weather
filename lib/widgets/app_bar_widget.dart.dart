@@ -3,18 +3,17 @@ import 'package:any_weather_app/models/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../custom_themes.dart';
+
 class AppBarWidget extends StatefulWidget {
   final String time;
-  final double tempKelvin;
-  const AppBarWidget({Key key, this.time, this.tempKelvin}) : super(key: key);
+  const AppBarWidget({Key key, this.time}) : super(key: key);
 
   @override
   _AppBarWidgetState createState() => _AppBarWidgetState();
 }
 
 class _AppBarWidgetState extends State<AppBarWidget> {
-  bool _darkMode = false;
-
   @override
   Widget build(BuildContext context) {
     return Row(
@@ -27,36 +26,30 @@ class _AppBarWidgetState extends State<AppBarWidget> {
   }
 
   Align popupMenuWidget() {
-    var provider = Provider.of<ScaleModel>(context, listen: false);
+    var scaleProvider = Provider.of<ScaleModel>(context, listen: false);
 
     return Align(
       alignment: Alignment.centerLeft,
-      child: Consumer<ScaleModel>(builder: (context, model, child) {
-        return PopupMenuButton(
-          child: Icon(Icons.menu, size: 40),
-          initialValue: 2,
-          itemBuilder: (context) => <PopupMenuEntry>[
-            PopupMenuItem(
-              child: Column(
-                children: [
-                  tempScales("celcius", (value) {
-                    provider.setScale(TempScales.celsius);
-                    print(model.convertTemp(widget.tempKelvin));
-                  }, TempScales.celsius),
-                  tempScales("fahrenheit", (value) {
-                    provider.setScale(TempScales.fahrenheit);
-                    print(model.convertTemp(widget.tempKelvin));
-                  }, TempScales.fahrenheit),
-                  tempScales("kelvin", (value) {
-                    provider.setScale(TempScales.kelvin);
-                    print(model.convertTemp(widget.tempKelvin));
-                  }, TempScales.kelvin),
-                ],
-              ),
+      child: PopupMenuButton(
+        child: Icon(Icons.menu, size: 40),
+        itemBuilder: (context) => <PopupMenuEntry>[
+          PopupMenuItem(
+            child: Column(
+              children: [
+                tempScales("celcius", (value) {
+                  scaleProvider.setScale(TempScales.celsius);
+                }, TempScales.celsius),
+                tempScales("fahrenheit", (value) {
+                  scaleProvider.setScale(TempScales.fahrenheit);
+                }, TempScales.fahrenheit),
+                tempScales("kelvin", (value) {
+                  scaleProvider.setScale(TempScales.kelvin);
+                }, TempScales.kelvin),
+              ],
             ),
-          ],
-        );
-      }),
+          ),
+        ],
+      ),
     );
   }
 
@@ -83,23 +76,24 @@ class _AppBarWidgetState extends State<AppBarWidget> {
   }
 
   Row switchWidget() {
+    var themeProvider = Provider.of<CustomThemeModel>(context, listen: false);
+
     return Row(
       mainAxisAlignment: MainAxisAlignment.end,
       children: [
-        Icon(_darkMode ? Icons.brightness_2_sharp : Icons.brightness_4_sharp),
+        Icon(themeProvider.isDarkMode ? Icons.brightness_2_sharp : Icons.brightness_4_sharp),
         Switch(
           activeColor: Colors.white,
           inactiveThumbColor: Colors.black,
-          value: _darkMode,
+          value: themeProvider.isDarkMode,
           onChanged: (value) {
             setState(
               () {
                 if (value) {
-                  Provider.of<CustomThemeModel>(context, listen: false).setThemeData(ThemeData.dark());
+                  themeProvider.setThemeData(darkTheme);
                 } else {
-                  Provider.of<CustomThemeModel>(context, listen: false).setThemeData(ThemeData.light());
+                  themeProvider.setThemeData(lightTheme);
                 }
-                _darkMode = value;
               },
             );
           },
