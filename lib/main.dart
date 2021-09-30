@@ -22,9 +22,7 @@ class MyApp extends StatelessWidget {
       title: 'AnyWeather',
       debugShowCheckedModeBanner: false,
       theme: Provider.of<CustomThemeModel>(context).getThemeData,
-      home: WeatherScreen(
-        cityName: "london",
-      ),
+      home: WeatherScreen(),
     );
   }
 }

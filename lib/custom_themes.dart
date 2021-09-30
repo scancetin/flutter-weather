@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 
 final ThemeData darkTheme = ThemeData(
   brightness: Brightness.dark,
-  primaryColor: Colors.grey,
   primarySwatch: MaterialColor(0xFFFFFFFF, {
     50: Color(0xFFFFFFFF),
     100: Color(0xFFFFFFFF),
@@ -33,8 +32,6 @@ final lightTheme = ThemeData(
     800: Color(0xff000000),
     900: Color(0xff000000),
   }),
-
-  // toggleableActiveColor: Colors.grey[900],
 );
 
 // https://rxlabz.github.io/panache/#/editor

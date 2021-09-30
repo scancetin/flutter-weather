@@ -1,11 +1,11 @@
 import 'package:any_weather_app/models/scale.dart';
-import 'package:any_weather_app/models/weather.dart';
+import 'package:any_weather_app/models/current_weather.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 class CurrentInfosWidget extends StatelessWidget {
-  final Weather weather;
+  final CurrentWeather weather;
   const CurrentInfosWidget({Key key, this.weather}) : super(key: key);
 
   @override

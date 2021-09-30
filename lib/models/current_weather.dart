@@ -5,7 +5,7 @@ import 'package:weather_icons/weather_icons.dart';
 import 'package:http/http.dart' as http;
 import 'dart:async';
 
-class Weather extends Equatable {
+class CurrentWeather extends Equatable {
   final int sunrise;
   final int sunset;
   final int humidity;
@@ -18,7 +18,7 @@ class Weather extends Equatable {
   final double maxTemperature;
   final double minTemperature;
 
-  const Weather({
+  const CurrentWeather({
     @required this.sunrise,
     @required this.sunset,
     @required this.humidity,
@@ -47,10 +47,10 @@ class Weather extends Equatable {
         minTemperature,
       ];
 
-  factory Weather.fromMap(Map<String, dynamic> map) {
+  factory CurrentWeather.fromMap(Map<String, dynamic> map) {
     if (map == null) return null;
     final weather = map['weather'][0];
-    return Weather(
+    return CurrentWeather(
       description: weather['description'] ?? '',
       iconCode: weather['icon'] ?? '',
       cityName: map['name'] ?? '',
@@ -107,11 +107,11 @@ class Weather extends Equatable {
   }
 }
 
-Future<Weather> fetchWeather(String cityName) async {
+Future<CurrentWeather> fetchCurrentWeather(String cityName) async {
   String url = "https://api.openweathermap.org/data/2.5/weather?q=$cityName&appid=9ad608fb1f1cba7a243f1ef51c62ad46";
   http.Response response = await http.get(Uri.parse(url));
   if (response.statusCode == 200) {
-    return Weather.fromMap(jsonDecode(response.body));
+    return CurrentWeather.fromMap(jsonDecode(response.body));
   } else {
     throw Exception('Failed to load weather');
   }

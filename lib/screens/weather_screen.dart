@@ -1,81 +1,76 @@
 import 'package:any_weather_app/models/scale.dart';
-import 'package:any_weather_app/models/weather.dart';
+import 'package:any_weather_app/models/current_weather.dart';
 import 'package:any_weather_app/widgets/current_infos_widget.dart';
-import 'package:any_weather_app/widgets/forecast_widget.dart';
 import 'package:any_weather_app/widgets/app_bar_widget.dart.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 class WeatherScreen extends StatefulWidget {
-  final String cityName;
-  WeatherScreen({Key key, this.cityName}) : super(key: key);
+  WeatherScreen({Key key}) : super(key: key);
 
   @override
-  _WeatherScreenState createState() => _WeatherScreenState(cityName: cityName);
+  _WeatherScreenState createState() => _WeatherScreenState();
 }
 
 class _WeatherScreenState extends State<WeatherScreen> {
-  _WeatherScreenState({this.cityName});
-  String cityName;
-  Future<Weather> futureWeather;
+  Future<CurrentWeather> futureWeather;
+  TextEditingController _cityNameController;
 
   @override
   void initState() {
     super.initState();
-    futureWeather = fetchWeather(cityName);
+    futureWeather = fetchCurrentWeather("london");
+    _cityNameController = TextEditingController();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: FutureBuilder<Weather>(
-          future: futureWeather,
-          builder: (context, snapshot) {
-            if (snapshot.hasData) {
-              return SafeArea(
-                child: Column(
-                  children: [
-                    Expanded(
-                      child: AppBarWidget(
-                        time: DateFormat("EEEE, d MMMM yyyy").format(DateTime.fromMillisecondsSinceEpoch((snapshot.data.sunrise + snapshot.data.timeZone) * 1000)),
-                      ),
+      resizeToAvoidBottomInset: false,
+      body: FutureBuilder<CurrentWeather>(
+        future: futureWeather,
+        builder: (context, snapshot) {
+          if (snapshot.hasData) {
+            return SafeArea(
+              child: Column(
+                children: [
+                  Expanded(
+                    child: AppBarWidget(
+                      time: DateFormat("EEEE, d MMMM yyyy").format(DateTime.fromMillisecondsSinceEpoch((snapshot.data.sunrise + snapshot.data.timeZone) * 1000)),
                     ),
-                    Expanded(
-                      flex: 2,
-                      child: cityInfos(snapshot.data.cityName, snapshot.data.description),
-                    ),
-                    Expanded(
-                      flex: 4,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Expanded(
-                            child: currentWeather(snapshot.data.temperature, snapshot.data.getIconData()),
+                  ),
+                  Expanded(
+                    flex: 2,
+                    child: cityInfos(snapshot.data.cityName, snapshot.data.description),
+                  ),
+                  Expanded(
+                    flex: 8,
+                    child: Column(
+                      children: [
+                        Expanded(
+                          child: currentWeather(snapshot.data.temperature, snapshot.data.getIconData()),
+                        ),
+                        Expanded(
+                          child: Column(
+                            children: [
+                              CurrentInfosWidget(weather: snapshot.data),
+                              plusButton(),
+                            ],
                           ),
-                          Expanded(
-                            child: Column(
-                              children: [
-                                CurrentInfosWidget(weather: snapshot.data),
-                                plusButton(),
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
+                        ),
+                      ],
                     ),
-                    Expanded(
-                      flex: 5,
-                      child: ForecastWidget(),
-                    ),
-                  ],
-                ),
-              );
-            } else if (snapshot.hasError) {
-              return Text("${snapshot.error}");
-            }
-            return Container();
-          }),
+                  ),
+                ],
+              ),
+            );
+          } else if (snapshot.hasError) {
+            return Text("${snapshot.error}");
+          }
+          return Container();
+        },
+      ),
     );
   }
 
@@ -101,10 +96,9 @@ class _WeatherScreenState extends State<WeatherScreen> {
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Icon(icon, size: 150),
-        SizedBox(height: 30),
         Text(
           "${Provider.of<ScaleModel>(context).convertTemp(temp)}°",
-          style: TextStyle(fontSize: 50),
+          style: TextStyle(fontSize: 60, fontWeight: FontWeight.bold),
         ),
       ],
     );
@@ -116,7 +110,37 @@ class _WeatherScreenState extends State<WeatherScreen> {
       child: Padding(
         padding: EdgeInsets.only(right: 10),
         child: FloatingActionButton(
-          onPressed: () {},
+          onPressed: () {
+            showDialog(
+                context: context,
+                builder: (context) {
+                  return Dialog(
+                    child: Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          TextField(
+                            controller: _cityNameController,
+                            decoration: InputDecoration(labelText: "City Name"),
+                          ),
+                          SizedBox(height: 10),
+                          FloatingActionButton(
+                            onPressed: () {
+                              print(_cityNameController.text);
+                              setState(() {
+                                futureWeather = fetchCurrentWeather(_cityNameController.text.toLowerCase());
+                              });
+                              _cityNameController.text = "";
+                            },
+                            child: Icon(Icons.add),
+                          )
+                        ],
+                      ),
+                    ),
+                  );
+                });
+          },
           child: Icon(Icons.add),
         ),
       ),
