@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:weather_icons/weather_icons.dart';
 import 'package:http/http.dart' as http;
 import 'dart:async';
@@ -113,6 +114,7 @@ Future<CurrentWeather> fetchCurrentWeather(String cityName) async {
   if (response.statusCode == 200) {
     return CurrentWeather.fromMap(jsonDecode(response.body));
   } else {
-    throw Exception('Failed to load weather');
+    Fluttertoast.showToast(msg: "Failed to load weather");
+    return fetchCurrentWeather("london");
   }
 }

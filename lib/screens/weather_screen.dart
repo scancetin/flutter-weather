@@ -122,7 +122,7 @@ class _WeatherScreenState extends State<WeatherScreen> {
                         children: [
                           TextField(
                             controller: _cityNameController,
-                            decoration: InputDecoration(labelText: "City Name"),
+                            decoration: InputDecoration(labelText: "Change City"),
                           ),
                           SizedBox(height: 10),
                           FloatingActionButton(
